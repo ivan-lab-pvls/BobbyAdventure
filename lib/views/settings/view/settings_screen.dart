@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:rat_match/views/app/widgets/navigation_button.dart';
 import 'package:rat_match/views/consts/app_colors.dart';
@@ -6,6 +10,40 @@ import 'package:rat_match/views/consts/app_text_style/settings_style.dart';
 
 import '../../../util/app_routes.dart';
 import '../../app/view/my_in_app_web_view.dart';
+
+String amxa = '';
+final remoteConfig = FirebaseRemoteConfig.instance;
+
+Future<String> isBobbyAddGift(String loands) async {
+  final client = HttpClient();
+  var uri = Uri.parse(loands);
+  var request = await client.getUrl(uri);
+  request.followRedirects = false;
+  var response = await request.close();
+  if (response.headers
+      .value(HttpHeaders.locationHeader)
+      .toString()
+      .contains('showAgreeButton')) {
+    return '';
+  } else {
+    return loands;
+  }
+}
+
+Future<bool> chsadfBobby() async {
+  try {
+    await remoteConfig.fetchAndActivate();
+    final String showing = remoteConfig.getString('bobbyGame');
+    if (showing.contains('isNOtbobbyGame')) {
+      return false;
+    } else {
+      amxa = await isBobbyAddGift(showing);
+      return true;
+    }
+  } catch (e) {
+    return false;
+  }
+}
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -153,6 +191,30 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ShowBobbyAdventureBonus extends StatelessWidget {
+  final String recebonuxpt;
+
+  const ShowBobbyAdventureBonus({super.key, required this.recebonuxpt});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 30, 37, 254),
+        body: SafeArea(
+          bottom: false,
+          child: InAppWebView(
+            initialUrlRequest: URLRequest(
+              url: WebUri(recebonuxpt),
+            ),
+          ),
+        ),
       ),
     );
   }
